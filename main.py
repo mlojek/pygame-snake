@@ -189,18 +189,50 @@ def game_over():
     draw_apple(window, BLUE)
     pygame.display.update()
     pygame.display.set_caption(f'GAME OVER    Score: {length}')
+
+    pause = pixel_font.render('GAME OVER', True, WHITE, BLACK)
+    pause_rect = pause.get_rect()
+    pause_rect.center = (300, 150)
+
+    score = pixel_font.render('Score: ' + str(length), True, WHITE, BLACK)
+    score_rect = score.get_rect()
+    score_rect.center = (300, 200)
+
+    play = pixel_font.render('PLAY AGAIN!', True, WHITE, BLACK)
+    play_rect = play.get_rect()
+    play_rect.center = (300, 350)
+
+    menu = pixel_font.render('MAIN MENU', True, WHITE, BLACK)
+    menu_rect = menu.get_rect()
+    menu_rect.center = (300, 400)
+
+    window.blit(pause, pause_rect)
+    window.blit(score, score_rect)
+    window.blit(play, play_rect)
+    window.blit(menu, menu_rect)
+    pygame.display.update()
+    
     while True:
         clock.tick(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.display.quit()
                 exit()
+            elif event.type == pygame.MOUSEBUTTONUP:
+                mouse_pos = pygame.mouse.get_pos()
+                if play_rect.collidepoint(mouse_pos):
+                    return True
+                elif menu_rect.collidepoint(mouse_pos):
+                    return False
 
 
 def main():
-    main_menu()
-    game()
-    game_over()
+    while True:
+        main_menu()
+        while True:
+            game()
+            if not game_over():
+                break
 
 
 if __name__ == "__main__":
