@@ -7,26 +7,36 @@ pygame.font.init()
 window = pygame.display.set_mode((600, 600))
 pixel_font = pygame.font.Font('pixel_font.ttf', 50)
 clock = pygame.time.Clock()
-memory = open('high_score.txt', 'r')
+
+try:
+    memory = open('high_score.txt', 'r')
+    high_score = memory.readline()
+    memory.close()
+except ValueError:
+    high_score = '0'
 
 snake = [[2, 2]]
 length = 4
 direction = 'd'
 apple = [17, 17]
 
-try:
-    high_score = memory.readline()
-    memory.close()
-    high_score_int = int(high_score)
-except ValueError:
-    high_score = '0'
-    high_score_int = 0
-
 
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 BLUE = (0, 255, 255)
 WHITE = (255, 255, 255)
+
+
+def reset():
+    global snake
+    global length
+    global direction
+    global apple
+
+    snake = [[2, 2]]
+    length = 4
+    direction = 'd'
+    apple = [17, 17]
 
 
 def move(keys_pressed):
@@ -149,13 +159,16 @@ def pause_menu():
 
 
 def save_score():
-    if length > high_score_int:
+    global high_score
+    if length > int(high_score):
+        high_score = str(length)
         save = open('high_score.txt', 'w')
         save.write(str(length))
         save.close()
 
 
 def game():
+    reset()
     while True:
         run = True
         while run:
@@ -211,7 +224,7 @@ def game_over():
     window.blit(play, play_rect)
     window.blit(menu, menu_rect)
     pygame.display.update()
-    
+
     while True:
         clock.tick(30)
         for event in pygame.event.get():
